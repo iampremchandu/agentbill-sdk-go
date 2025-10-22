@@ -1,0 +1,27 @@
+name: Go Module Release
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+      
+      - name: Verify module
+        run: go mod verify
+      
+      - name: Run tests
+        run: go test -v ./...
+      
+      - name: Tag notification
+        run: |
+          echo "✅ Go module tagged and published"
+          echo "Install with: go get github.com/agentbill/agentbill-go@${{ github.ref_name }}"
